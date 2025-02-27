@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    /*id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")*/
 }
 
 android {
@@ -79,8 +77,4 @@ dependencies {
 
     implementation(libs.view)
     implementation(libs.compose)
-
-    /*implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.hilt.android.v250)
-    kapt(libs.hilt.android.compiler.v250)*/
 }

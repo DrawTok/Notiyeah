@@ -1,16 +1,16 @@
 package com.drawtok.notiyeah
 
-import android.content.BroadcastReceiver
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
+import android.app.AlertDialog
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import com.drawtok.notiyeah.service.ForegroundNotificationService
 import com.drawtok.notiyeah.service.NotificationService
 
 class MainActivity : ComponentActivity() {
@@ -19,31 +19,34 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        startForegroundService()
+
         if (!isNotificationListenerEnabled(this)) {
-            requestNotificationPermission( this)
+            requestNotificationPermission()
         }
 
-        val filter = IntentFilter("com.drawtok.notiyeah.NOTIFICATION_RECEIVED")
-        registerReceiver(notificationReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-
+        requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
     }
 
-    private val notificationReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val packageName = intent?.getStringExtra("packageName")
-            val tickerText = intent?.getStringExtra("tickerText")
-            Log.d("MainActivity", "📩 Nhận broadcast: $packageName - $tickerText")
+    private fun startForegroundService() {
+        val serviceIntent = Intent(this, ForegroundNotificationService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(notificationReceiver)
-    }
-
-    private fun requestNotificationPermission(context: Context) {
-        val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-        context.startActivity(intent)
+    private fun requestNotificationPermission() {
+        AlertDialog.Builder(this)
+            .setTitle("Cấp quyền đọc thông báo")
+            .setMessage("Ứng dụng cần quyền để đọc thông báo, vui lòng cấp quyền trong cài đặt.")
+            .setPositiveButton("Mở Cài Đặt") { _, _ ->
+                startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+            }
+            .setNegativeButton("Hủy", null)
+            .show()
     }
 
     private fun isNotificationListenerEnabled(context: Context): Boolean {
@@ -51,6 +54,4 @@ class MainActivity : ComponentActivity() {
         val enabledListeners = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
         return enabledListeners?.contains(cn.flattenToString()) == true
     }
-
 }
-

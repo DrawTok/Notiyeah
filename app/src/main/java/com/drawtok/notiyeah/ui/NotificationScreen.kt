@@ -8,7 +8,7 @@ import com.drawtok.notiyeah.data.NotificationEntity
 @Composable
 fun NotificationScreen() {
     val notifications: List<NotificationEntity> = List(10) { index ->
-        NotificationEntity(index, "Title $index", "Content $index", "App $index", System.currentTimeMillis())
+        NotificationEntity(index, "Title $index", "Content $index", "App $index", "kgkg", 1234567890)
     }
     LazyColumn {
         items(notifications, key = { it.id }) { notification ->
