@@ -9,7 +9,9 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.drawtok.notiyeah.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ForegroundNotificationService : Service() {
 
     override fun onCreate() {
@@ -30,8 +32,8 @@ class ForegroundNotificationService : Service() {
         }
 
         return NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Notiyeah Service Running")
-            .setContentText("Listening for notifications")
+            .setContentTitle("Dịch vụ Notiyeah")
+            .setContentText("Đang lắng nghe thông báo")
             .setSmallIcon(R.mipmap.ic_launcher)
             .build()
     }

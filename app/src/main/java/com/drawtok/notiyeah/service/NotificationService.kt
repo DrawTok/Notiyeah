@@ -1,15 +1,23 @@
 package com.drawtok.notiyeah.service
 
-import android.app.Notification
-import android.graphics.Bitmap
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.drawtok.notiyeah.data.NotificationEntity
+import com.drawtok.notiyeah.data.NotificationRepository
+import com.drawtok.notiyeah.data.local.NotificationDatabase
+import com.drawtok.notiyeah.viewmodel.NotificationViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NotificationService : NotificationListenerService() {
 
-    private val seenNotifications = HashSet<String>()
+    @Inject
+    lateinit var repository: NotificationRepository
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
 
@@ -30,12 +38,10 @@ class NotificationService : NotificationListenerService() {
             timestamp = System.currentTimeMillis()
         )
 
-    }
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.saveNotification(notification)
+        }
 
-    fun extractNotificationImage(notification: Notification): Bitmap? {
-        val extras = notification.extras
-        val image = extras.getParcelable<Bitmap>(Notification.EXTRA_PICTURE)
-        return image
     }
 
     private fun splitText(input: String): Triple<String, String, String> {

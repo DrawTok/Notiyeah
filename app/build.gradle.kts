@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -42,9 +45,14 @@ android {
         jvmTarget = "11"
     }
 
-    /*kapt {
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
+    kapt {
         correctErrorTypes = true
-    }*/
+    }
+
 }
 
 dependencies {
@@ -74,7 +82,13 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.runtime.rxjava2)
-
     implementation(libs.view)
     implementation(libs.compose)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 }

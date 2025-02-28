@@ -1,24 +1,29 @@
 package com.drawtok.notiyeah
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.app.AlertDialog
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drawtok.notiyeah.service.ForegroundNotificationService
 import com.drawtok.notiyeah.service.NotificationService
+import com.drawtok.notiyeah.ui.NotificationScreen
+import com.drawtok.notiyeah.viewmodel.NotificationViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         startForegroundService()
 
@@ -27,6 +32,11 @@ class MainActivity : ComponentActivity() {
         }
 
         requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
+
+        setContent {
+            val viewModel: NotificationViewModel = viewModel()
+            NotificationScreen(viewModel)
+        }
     }
 
     private fun startForegroundService() {
