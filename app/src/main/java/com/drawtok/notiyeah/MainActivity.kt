@@ -2,9 +2,11 @@ package com.drawtok.notiyeah
 
 import android.Manifest
 import android.app.AlertDialog
+import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -12,6 +14,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drawtok.notiyeah.service.ForegroundNotificationService
 import com.drawtok.notiyeah.service.NotificationService
@@ -63,8 +66,6 @@ class MainActivity : ComponentActivity() {
     private fun isNotificationListenerEnabled(context: Context): Boolean {
         val cn = ComponentName(context, NotificationService::class.java)
         val enabledListeners = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
-        Log.d("kkgkg", "cn: ${cn.flattenToString()}")
-        Log.d("kkgkg", "isNotificationListenerEnabled: $enabledListeners")
         return enabledListeners?.contains(cn.flattenToString()) == true
     }
 
@@ -79,4 +80,5 @@ class MainActivity : ComponentActivity() {
             restartNotificationService()
         }
     }
+
 }

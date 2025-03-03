@@ -46,8 +46,7 @@ class NotificationService : NotificationListenerService() {
         )
 
         CoroutineScope(Dispatchers.IO).launch {
-            repository.saveNotification(notification)
-            repository.getAllNotifications()
+            repository.insertNotification(notification)
         }
 
     }

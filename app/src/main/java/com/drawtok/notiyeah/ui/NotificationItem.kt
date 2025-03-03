@@ -1,6 +1,7 @@
 package com.drawtok.notiyeah.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -17,12 +18,23 @@ import java.util.Locale
 
 @Composable
 fun NotificationItem(notification: NotificationEntity) {
-    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = notification.title, fontWeight = FontWeight.Bold)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(
+                text = notification.title,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.padding(bottom = 10.dp))
             Text(text = notification.content)
-            Text(text = SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault())
-                .format(Date(notification.timestamp)), fontSize = 12.sp)
+            Spacer(Modifier.padding(bottom = 6.dp))
+            Text(
+                text = SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault())
+                    .format(Date(notification.timestamp)), fontSize = 12.sp
+            )
         }
     }
 }

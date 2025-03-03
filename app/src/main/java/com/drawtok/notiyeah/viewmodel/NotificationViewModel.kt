@@ -21,14 +21,14 @@ class NotificationViewModel @Inject constructor(private val repository: Notifica
     }
 
     private fun fetchNotifications() {
+        _notifications.value = emptyList()
         viewModelScope.launch {
-            _notifications.value = repository.getAllNotifications()
+
         }
     }
 
     fun insertNotification(notification: NotificationEntity) {
         viewModelScope.launch {
-            repository.saveNotification(notification)
         }
     }
 
