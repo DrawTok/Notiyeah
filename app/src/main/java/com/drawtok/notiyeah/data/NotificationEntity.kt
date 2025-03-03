@@ -9,6 +9,5 @@ data class NotificationEntity(
     val title: String,
     val content: String,
     val packageName: String,
-    val appName: String,
     val timestamp: Long
 )

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -62,6 +63,20 @@ class MainActivity : ComponentActivity() {
     private fun isNotificationListenerEnabled(context: Context): Boolean {
         val cn = ComponentName(context, NotificationService::class.java)
         val enabledListeners = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
+        Log.d("kkgkg", "cn: ${cn.flattenToString()}")
+        Log.d("kkgkg", "isNotificationListenerEnabled: $enabledListeners")
         return enabledListeners?.contains(cn.flattenToString()) == true
+    }
+
+    private fun restartNotificationService() {
+        stopService(Intent(this, NotificationService::class.java))
+        startService(Intent(this, NotificationService::class.java))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isNotificationListenerEnabled(this)) {
+            restartNotificationService()
+        }
     }
 }

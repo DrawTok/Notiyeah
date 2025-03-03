@@ -1,5 +1,11 @@
 package com.drawtok.notiyeah.service
 
+import android.app.Notification
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Icon
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -22,34 +28,27 @@ class NotificationService : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification) {
 
         if (sbn.packageName == packageName) return
-        val extras = sbn.notification.tickerText
-        if (extras.isNullOrEmpty()) return
-        val (appName, title, content) = splitText(extras.toString())
+        val extras = sbn.notification.extras
+        val timestamp = sbn.postTime
+        val packageName = sbn.packageName
+        val title = extras.getString(Notification.EXTRA_TITLE) ?: "No Title"
 
+        val content = extras.getString(Notification.EXTRA_TEXT) ?: "No Content"
         Log.d(
             "NotificationService",
-            "Notification posted: $appName - $title - $content"
+            "Notification posted: $packageName - $title - $content - $timestamp"
         )
         val notification = NotificationEntity(
             title = title,
             content = content,
-            packageName = sbn.packageName,
-            appName = appName,
-            timestamp = System.currentTimeMillis()
+            packageName = packageName,
+            timestamp = timestamp
         )
 
         CoroutineScope(Dispatchers.IO).launch {
             repository.saveNotification(notification)
+            repository.getAllNotifications()
         }
 
-    }
-
-    private fun splitText(input: String): Triple<String, String, String> {
-        val parts = input.split(",").map { it.trim() }
-        val first = parts.getOrNull(0) ?: ""
-        val second = parts.getOrNull(1) ?: ""
-        val remaining = parts.drop(2).joinToString(", ")
-
-        return Triple(first, second, remaining)
     }
 }
